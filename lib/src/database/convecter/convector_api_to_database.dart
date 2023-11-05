@@ -1,7 +1,7 @@
 import 'package:virus_total_cli/src/api/models/analysis_data_model/analysis_data_model.dart';
 import 'package:virus_total_cli/src/database/model/database_data_model.dart';
 
-VirusTotalData convertFromAnalysisDataToVirustotalData(
+VirusTotalData convertAnalysisDataToVirusTotalData(
     AnalysisData data, String source) {
   return VirusTotalData(
     harmless: data.attributes.stats.harmless,
