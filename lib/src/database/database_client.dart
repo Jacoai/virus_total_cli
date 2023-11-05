@@ -17,6 +17,10 @@ class DatabaseClient {
     _dataBase = await Hive.openBox(_databaseName);
   }
 
+  Future<void> close() async {
+    await _dataBase.close();
+  }
+
   void showDatabase(Box<VirusTotalData> database) {
     final allData = database.values.toList();
     for (int i = 0; i < allData.length; i++) {
