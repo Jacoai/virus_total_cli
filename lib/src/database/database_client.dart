@@ -21,8 +21,8 @@ class DatabaseClient {
     await _dataBase.close();
   }
 
-  void showDatabase(Box<VirusTotalData> database) {
-    final allData = database.values.toList();
+  void show() {
+    final allData = _dataBase.values.toList();
     for (int i = 0; i < allData.length; i++) {
       printDBResult(allData[i]);
     }
