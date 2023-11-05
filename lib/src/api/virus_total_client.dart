@@ -16,13 +16,15 @@ class VirusTotalClient {
     AnalysisData analysisData;
     String id;
     final dynamic sendData;
+    bool isFile;
 
     RegExp urlRegex = RegExp(
-      r'[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)',
+      r"((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?",
     );
 //filling in data depending on whether it is a file or a link
     if (path.contains(urlRegex)) {
-      sendData = path;
+      sendData = {'url': path};
+      isFile = false;
     } else {
       String filePath = path.split(Platform.pathSeparator).last;
       sendData = FormData.fromMap(
@@ -30,12 +32,14 @@ class VirusTotalClient {
           'file': await MultipartFile.fromFile(filePath),
         },
       );
+      print(sendData.runtimeType);
+      isFile = true;
     }
 
     try {
-      id = await _getAnalysisId(path, sendData);
+      id = await _getAnalysisId(path, sendData, isFile);
     } catch (e) {
-      throw Exception(e);
+      rethrow;
     }
 
     try {
@@ -47,17 +51,17 @@ class VirusTotalClient {
         analysisData = await _getAnalysis(id);
       }
     } catch (e) {
-      throw Exception(e);
+      rethrow;
     }
 
     return analysisData;
   }
 
-  Future<String> _getAnalysisId(String path, dynamic data) async {
+  Future<String> _getAnalysisId(String path, dynamic data, bool isFile) async {
     String id;
 
     try {
-      Response response = await _dio.post('urls',
+      Response response = await _dio.post(isFile ? 'files' : 'urls',
           data: data,
           options: Options(headers: {
             'x-apikey': _apikey,
