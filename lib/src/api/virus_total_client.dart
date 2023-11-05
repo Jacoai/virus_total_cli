@@ -4,13 +4,13 @@ import 'dart:io';
 import 'package:virus_total_cli/src/api/models/analysis_data_model/analysis_data_model.dart';
 
 class VirusTotalClient {
-  VirusTotalClient({required this.apikey});
+  VirusTotalClient({required String apikey}) : _apikey = apikey;
 
   final Dio _dio = Dio(
     BaseOptions(baseUrl: 'https://www.virustotal.com/api/v3/'),
   );
 
-  final String apikey;
+  final String _apikey;
 
   Future<AnalysisData> check(String path) async {
     AnalysisData analysisData;
@@ -33,18 +33,18 @@ class VirusTotalClient {
     }
 
     try {
-      id = await getAnalysisId(path, sendData);
+      id = await _getAnalysisId(path, sendData);
     } catch (e) {
       throw Exception(e);
     }
 
     try {
-      analysisData = await getAnalysis(id);
+      analysisData = await _getAnalysis(id);
       //queue handling
       while (analysisData.attributes.status == 'queued') {
         print('$path is in a queue\n');
         await Future.delayed(Duration(seconds: 15));
-        analysisData = await getAnalysis(id);
+        analysisData = await _getAnalysis(id);
       }
     } catch (e) {
       throw Exception(e);
@@ -53,14 +53,14 @@ class VirusTotalClient {
     return analysisData;
   }
 
-  Future<String> getAnalysisId(String path, dynamic data) async {
+  Future<String> _getAnalysisId(String path, dynamic data) async {
     String id;
 
     try {
       Response response = await _dio.post('urls',
           data: data,
           options: Options(headers: {
-            'x-apikey': apikey,
+            'x-apikey': _apikey,
             "content-type": "application/x-www-form-urlencoded"
           }));
 
@@ -72,13 +72,13 @@ class VirusTotalClient {
     return id;
   }
 
-  Future<AnalysisData> getAnalysis(String id) async {
+  Future<AnalysisData> _getAnalysis(String id) async {
     AnalysisData result;
 
     try {
       Response response = await _dio.get('analyses/$id',
           options: Options(headers: {
-            'x-apikey': apikey,
+            'x-apikey': _apikey,
             "accept": "application/json",
           }));
 
