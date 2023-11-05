@@ -47,7 +47,7 @@ class VirusTotalClient {
       //queue handling
       while (analysisData.attributes.status == 'queued') {
         print('$path is in a queue\n');
-        await Future.delayed(Duration(seconds: 20));
+        await Future.delayed(Duration(seconds: 40));
         analysisData = await _getAnalysis(id);
       }
     } catch (e) {
