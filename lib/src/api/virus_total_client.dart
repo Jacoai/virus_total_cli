@@ -84,7 +84,7 @@ class VirusTotalClient {
 
       result = AnalysisData.fromJson(response.data['data']);
     } catch (e) {
-      throw Exception('Error: get Analysis report: $e');
+      rethrow;
     }
 
     return result;
