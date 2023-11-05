@@ -5,15 +5,16 @@ import 'package:hive/hive.dart';
 import 'package:virus_total_cli/src/database/model/database_data_model.dart';
 
 class DatabaseClient {
-  DatabaseClient({this.databaseName = "mainData"});
+  DatabaseClient({String databaseName = "mainData"})
+      : _databaseName = databaseName;
 
-  final String databaseName;
-  late Box<VirusTotalData> dataBase;
+  final String _databaseName;
+  late Box<VirusTotalData> _dataBase;
 
   Future<void> init() async {
-    Hive.init(databaseName);
+    Hive.init(_databaseName);
     Hive.registerAdapter(VirusTotalDataAdapter());
-    dataBase = await Hive.openBox(databaseName);
+    _dataBase = await Hive.openBox(_databaseName);
   }
 
   void showDatabase(Box<VirusTotalData> database) {
@@ -30,7 +31,7 @@ class DatabaseClient {
       rethrow;
     }
 
-    await dataBase.put(key, value);
+    await _dataBase.put(key, value);
   }
 
   Future<bool> containsKey(String key) async {
@@ -40,7 +41,7 @@ class DatabaseClient {
       rethrow;
     }
 
-    return dataBase.containsKey(key);
+    return _dataBase.containsKey(key);
   }
 
   Future<String> _calculateMD5(File file) async {
