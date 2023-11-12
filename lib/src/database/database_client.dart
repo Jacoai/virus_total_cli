@@ -37,6 +37,11 @@ class DatabaseClient {
     await _dataBase.delete(key);
   }
 
+  Future<VirusTotalData?> get(String key) async {
+    key = await _getKey(key, _isFile(key));
+    return _dataBase.get(key);
+  }
+
   Future<void> put(String key, AnalysisData data) async {
     VirusTotalData virusTotalData =
         convertAnalysisDataToVirusTotalData(data, key, data.isFile);
