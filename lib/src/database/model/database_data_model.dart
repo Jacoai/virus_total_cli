@@ -25,6 +25,12 @@ class VirusTotalData {
   @HiveField(6)
   String source;
 
+  @HiveField(7)
+  bool isFile;
+
+  @HiveField(8)
+  String? md5;
+
   VirusTotalData({
     required this.harmless,
     required this.malicious,
@@ -33,5 +39,7 @@ class VirusTotalData {
     required this.undetected,
     required this.time,
     required this.source,
+    required this.isFile,
+    this.md5,
   });
 }

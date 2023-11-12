@@ -24,13 +24,15 @@ class VirusTotalDataAdapter extends TypeAdapter<VirusTotalData> {
       undetected: fields[3] as int,
       time: fields[5] as int,
       source: fields[6] as String,
+      isFile: fields[7] as bool,
+      md5: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, VirusTotalData obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.harmless)
       ..writeByte(1)
@@ -44,7 +46,11 @@ class VirusTotalDataAdapter extends TypeAdapter<VirusTotalData> {
       ..writeByte(5)
       ..write(obj.time)
       ..writeByte(6)
-      ..write(obj.source);
+      ..write(obj.source)
+      ..writeByte(7)
+      ..write(obj.isFile)
+      ..writeByte(8)
+      ..write(obj.md5);
   }
 
   @override
