@@ -12,20 +12,20 @@ class DatabaseClient {
       : _databaseName = databaseName;
 
   final String _databaseName;
-  late Box<VirusTotalData> _dataBase;
+  late Box<VirusTotalData> dataBase;
 
   Future<void> init() async {
     Hive.init(_databaseName);
     Hive.registerAdapter(VirusTotalDataAdapter());
-    _dataBase = await Hive.openBox(_databaseName);
+    dataBase = await Hive.openBox(_databaseName);
   }
 
   Future<void> close() async {
-    await _dataBase.close();
+    await dataBase.close();
   }
 
   void show() {
-    final allData = _dataBase.values.toList();
+    final allData = dataBase.values.toList();
     for (int i = 0; i < allData.length; i++) {
       printDBResult(allData[i]);
     }
@@ -34,12 +34,12 @@ class DatabaseClient {
   Future<void> delete(String key) async {
     key = await _getKey(key, _isFile(key));
 
-    await _dataBase.delete(key);
+    await dataBase.delete(key);
   }
 
   Future<VirusTotalData?> get(String key) async {
     key = await _getKey(key, _isFile(key));
-    return _dataBase.get(key);
+    return dataBase.get(key);
   }
 
   Future<void> put(String key, AnalysisData data) async {
@@ -55,7 +55,7 @@ class DatabaseClient {
       rethrow;
     }
 
-    await _dataBase.put(key, virusTotalData);
+    await dataBase.put(key, virusTotalData);
   }
 
   Future<bool> containsKey(String key) async {
@@ -65,7 +65,7 @@ class DatabaseClient {
       rethrow;
     }
 
-    return _dataBase.containsKey(key);
+    return dataBase.containsKey(key);
   }
 
   Future<String> _calculateMD5(File file) async {
