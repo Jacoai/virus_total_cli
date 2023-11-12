@@ -13,6 +13,7 @@ class AnalysisData with _$AnalysisData {
     required String type,
     required String id,
     required Links links,
+    @Default(false) bool isFile,
   }) = _AnalysisData;
 
   factory AnalysisData.fromJson(Map<String, dynamic> json) =>

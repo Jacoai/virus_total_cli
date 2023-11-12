@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:hive/hive.dart';
 import 'package:virus_total_cli/src/database/model/database_data_model.dart';
+import 'package:virus_total_cli/virus_total_cli.dart';
 
+//TODO: Add delete method
+//TODO: Add TTL checker
 class DatabaseClient {
   DatabaseClient({String databaseName = "mainData"})
       : _databaseName = databaseName;
@@ -28,19 +31,31 @@ class DatabaseClient {
     }
   }
 
-  Future<void> put(String key, VirusTotalData value) async {
+  Future<void> delete(String key) async {
+    key = await _getKey(key, _isFile(key));
+
+    await _dataBase.delete(key);
+  }
+
+  Future<void> put(String key, AnalysisData data) async {
+    VirusTotalData virusTotalData =
+        convertAnalysisDataToVirusTotalData(data, key, data.isFile);
+    bool isFile = virusTotalData.isFile;
     try {
-      key = await _getKey(key);
+      key = await _getKey(key, isFile);
+      if (isFile) {
+        virusTotalData.md5 = key;
+      }
     } catch (e) {
       rethrow;
     }
 
-    await _dataBase.put(key, value);
+    await _dataBase.put(key, virusTotalData);
   }
 
   Future<bool> containsKey(String key) async {
     try {
-      key = await _getKey(key);
+      key = await _getKey(key, _isFile(key));
     } catch (e) {
       rethrow;
     }
@@ -55,8 +70,8 @@ class DatabaseClient {
     return (hash);
   }
 
-  Future<String> _getKey(String path) async {
-    if (_isFile(path)) {
+  Future<String> _getKey(String path, bool isFile) async {
+    if (isFile) {
       final file = File(path);
 
       if (!file.existsSync()) {
@@ -87,6 +102,8 @@ class DatabaseClient {
     print('Malicious:${data.malicious}');
     print('Suspicious:${data.suspicious}');
     print('Undetected:${data.undetected}');
+    print('Md5:${data.md5}');
+    print('isfile:${data.isFile}');
     print('Timeout:${data.timeout}');
     print('Date ${DateTime.fromMillisecondsSinceEpoch(data.time * 1000)}\n');
   }

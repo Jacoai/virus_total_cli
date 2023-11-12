@@ -12,19 +12,14 @@ class VirusTotalClient {
 
   final String _apikey;
 
-  Future<AnalysisData> check(String path) async {
+  Future<AnalysisData> check(String path, bool isFile) async {
     AnalysisData analysisData;
     String id;
     final dynamic sendData;
-    bool isFile;
 
-    RegExp urlRegex = RegExp(
-      r"((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?",
-    );
 //filling in data depending on whether it is a file or a link
-    if (path.contains(urlRegex)) {
+    if (!isFile) {
       sendData = {'url': path};
-      isFile = false;
     } else {
       String filePath = path.split(Platform.pathSeparator).last;
       sendData = FormData.fromMap(
@@ -32,8 +27,6 @@ class VirusTotalClient {
           'file': await MultipartFile.fromFile(filePath),
         },
       );
-      print(sendData.runtimeType);
-      isFile = true;
     }
 
     try {
@@ -47,13 +40,14 @@ class VirusTotalClient {
       //queue handling
       while (analysisData.attributes.status == 'queued') {
         print('$path is in a queue\n');
-        await Future.delayed(Duration(seconds: 40));
+        await Future.delayed(Duration(seconds: 25));
         analysisData = await _getAnalysis(id);
       }
     } catch (e) {
       rethrow;
     }
 
+    analysisData = analysisData.copyWith(isFile: isFile);
     return analysisData;
   }
 

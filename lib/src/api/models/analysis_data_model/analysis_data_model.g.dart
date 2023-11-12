@@ -13,6 +13,7 @@ _$AnalysisDataImpl _$$AnalysisDataImplFromJson(Map<String, dynamic> json) =>
       type: json['type'] as String,
       id: json['id'] as String,
       links: Links.fromJson(json['links'] as Map<String, dynamic>),
+      isFile: json['isFile'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$AnalysisDataImplToJson(_$AnalysisDataImpl instance) =>
@@ -21,4 +22,5 @@ Map<String, dynamic> _$$AnalysisDataImplToJson(_$AnalysisDataImpl instance) =>
       'type': instance.type,
       'id': instance.id,
       'links': instance.links,
+      'isFile': instance.isFile,
     };

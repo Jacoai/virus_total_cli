@@ -24,6 +24,7 @@ mixin _$AnalysisData {
   String get type => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError;
   Links get links => throw _privateConstructorUsedError;
+  bool get isFile => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -37,7 +38,12 @@ abstract class $AnalysisDataCopyWith<$Res> {
           AnalysisData value, $Res Function(AnalysisData) then) =
       _$AnalysisDataCopyWithImpl<$Res, AnalysisData>;
   @useResult
-  $Res call({Attributes attributes, String type, String id, Links links});
+  $Res call(
+      {Attributes attributes,
+      String type,
+      String id,
+      Links links,
+      bool isFile});
 
   $AttributesCopyWith<$Res> get attributes;
   $LinksCopyWith<$Res> get links;
@@ -60,6 +66,7 @@ class _$AnalysisDataCopyWithImpl<$Res, $Val extends AnalysisData>
     Object? type = null,
     Object? id = null,
     Object? links = null,
+    Object? isFile = null,
   }) {
     return _then(_value.copyWith(
       attributes: null == attributes
@@ -78,6 +85,10 @@ class _$AnalysisDataCopyWithImpl<$Res, $Val extends AnalysisData>
           ? _value.links
           : links // ignore: cast_nullable_to_non_nullable
               as Links,
+      isFile: null == isFile
+          ? _value.isFile
+          : isFile // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -106,7 +117,12 @@ abstract class _$$AnalysisDataImplCopyWith<$Res>
       __$$AnalysisDataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Attributes attributes, String type, String id, Links links});
+  $Res call(
+      {Attributes attributes,
+      String type,
+      String id,
+      Links links,
+      bool isFile});
 
   @override
   $AttributesCopyWith<$Res> get attributes;
@@ -129,6 +145,7 @@ class __$$AnalysisDataImplCopyWithImpl<$Res>
     Object? type = null,
     Object? id = null,
     Object? links = null,
+    Object? isFile = null,
   }) {
     return _then(_$AnalysisDataImpl(
       attributes: null == attributes
@@ -147,6 +164,10 @@ class __$$AnalysisDataImplCopyWithImpl<$Res>
           ? _value.links
           : links // ignore: cast_nullable_to_non_nullable
               as Links,
+      isFile: null == isFile
+          ? _value.isFile
+          : isFile // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -158,7 +179,8 @@ class _$AnalysisDataImpl implements _AnalysisData {
       {required this.attributes,
       required this.type,
       required this.id,
-      required this.links});
+      required this.links,
+      this.isFile = false});
 
   factory _$AnalysisDataImpl.fromJson(Map<String, dynamic> json) =>
       _$$AnalysisDataImplFromJson(json);
@@ -171,10 +193,13 @@ class _$AnalysisDataImpl implements _AnalysisData {
   final String id;
   @override
   final Links links;
+  @override
+  @JsonKey()
+  final bool isFile;
 
   @override
   String toString() {
-    return 'AnalysisData(attributes: $attributes, type: $type, id: $id, links: $links)';
+    return 'AnalysisData(attributes: $attributes, type: $type, id: $id, links: $links, isFile: $isFile)';
   }
 
   @override
@@ -186,12 +211,14 @@ class _$AnalysisDataImpl implements _AnalysisData {
                 other.attributes == attributes) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.links, links) || other.links == links));
+            (identical(other.links, links) || other.links == links) &&
+            (identical(other.isFile, isFile) || other.isFile == isFile));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, attributes, type, id, links);
+  int get hashCode =>
+      Object.hash(runtimeType, attributes, type, id, links, isFile);
 
   @JsonKey(ignore: true)
   @override
@@ -212,7 +239,8 @@ abstract class _AnalysisData implements AnalysisData {
       {required final Attributes attributes,
       required final String type,
       required final String id,
-      required final Links links}) = _$AnalysisDataImpl;
+      required final Links links,
+      final bool isFile}) = _$AnalysisDataImpl;
 
   factory _AnalysisData.fromJson(Map<String, dynamic> json) =
       _$AnalysisDataImpl.fromJson;
@@ -225,6 +253,8 @@ abstract class _AnalysisData implements AnalysisData {
   String get id;
   @override
   Links get links;
+  @override
+  bool get isFile;
   @override
   @JsonKey(ignore: true)
   _$$AnalysisDataImplCopyWith<_$AnalysisDataImpl> get copyWith =>
