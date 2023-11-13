@@ -21,7 +21,7 @@ class VirusTotalClient {
     if (!isFile) {
       sendData = {'url': path};
     } else {
-      String filePath = path.split(Platform.pathSeparator).last;
+      String filePath = path.split(Platform.pathSeparator).join('/');
       sendData = FormData.fromMap(
         {
           'file': await MultipartFile.fromFile(filePath),
