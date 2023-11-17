@@ -31,14 +31,18 @@ class DatabaseClient {
     }
   }
 
-  Future<void> delete(String key) async {
-    key = await getKey(key, _isFile(key));
+  Future<void> deletePath(String key) async {
+    key = await _getKey(key, _isFile(key));
 
     await dataBase.delete(key);
   }
 
+  Future<void> delete(String key) async {
+    await dataBase.delete(key);
+  }
+
   Future<VirusTotalData?> get(String key) async {
-    key = await getKey(key, _isFile(key));
+    key = await _getKey(key, _isFile(key));
     return dataBase.get(key);
   }
 
@@ -47,7 +51,7 @@ class DatabaseClient {
         convertAnalysisDataToVirusTotalData(data, key, data.isFile);
     bool isFile = virusTotalData.isFile;
     try {
-      key = await getKey(key, isFile);
+      key = await _getKey(key, isFile);
       if (isFile) {
         virusTotalData.md5 = key;
       }
@@ -60,7 +64,7 @@ class DatabaseClient {
 
   Future<bool> containsKey(String key) async {
     try {
-      key = await getKey(key, _isFile(key));
+      key = await _getKey(key, _isFile(key));
     } catch (e) {
       rethrow;
     }
@@ -75,7 +79,7 @@ class DatabaseClient {
     return (hash);
   }
 
-  Future<String> getKey(String path, bool isFile) async {
+  Future<String> _getKey(String path, bool isFile) async {
     if (isFile) {
       final file = File(path);
 
