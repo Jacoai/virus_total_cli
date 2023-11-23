@@ -5,8 +5,6 @@ import 'package:hive/hive.dart';
 import 'package:virus_total_cli/src/database/model/database_data_model.dart';
 import 'package:virus_total_cli/virus_total_cli.dart';
 
-//TODO: Add delete method
-//TODO: Add TTL checker
 class DatabaseClient {
   DatabaseClient({String databaseName = "mainData"})
       : _databaseName = databaseName;
@@ -31,8 +29,8 @@ class DatabaseClient {
     }
   }
 
-  Future<void> deletePath(String key) async {
-    key = await _getKey(key, _isFile(key));
+  Future<void> deletePath(String path) async {
+    String key = await _getKey(path, _isFile(path));
 
     await dataBase.delete(key);
   }
