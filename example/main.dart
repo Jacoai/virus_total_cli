@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:args/args.dart';
 import 'package:virus_total_cli/src/functions/is_file.dart';
 import 'package:virus_total_cli/virus_total_cli.dart';
@@ -24,21 +26,35 @@ void main(List<String> arguments) async {
 
   if (res.wasParsed('check')) {
     print('Cheking');
-
-    AnalysisData analysisData =
-        await virusTotalClient.check(res['check'], isFile(res['check']));
-    await databaseClient.put(res['check'], analysisData);
+    Queue<String> scanQueue = Queue();
+    scanQueue.add(res['check']);
 
     for (var el in res.rest) {
-      AnalysisData analysisData = await virusTotalClient.check(el, isFile(el));
-      await databaseClient.put(el, analysisData);
+      scanQueue.add(el);
     }
-  }
-  if (res.wasParsed('show')) {
-    databaseClient.show();
-  }
-  if (res.wasParsed('delete')) {
-    databaseClient.deletePath(res['delete']);
-    print('Successfully deleted');
+
+    bool fileflag;
+    for (var el in scanQueue) {
+      fileflag = isFile(el);
+      if (await databaseClient.containsKey(el)) {
+        String key = await databaseClient.getKey(el, fileflag);
+        VirusTotalData? virusTotalData = await databaseClient.get(key);
+        databaseClient.printDBResult(virusTotalData!);
+      } else {
+        AnalysisData analysisData = await virusTotalClient.check(el, fileflag);
+        await databaseClient.put(el, analysisData);
+
+        databaseClient.printDBResult(
+            convertAnalysisDataToVirusTotalData(analysisData, el, fileflag));
+      }
+    }
+
+    if (res.wasParsed('show')) {
+      databaseClient.show();
+    }
+    if (res.wasParsed('delete')) {
+      databaseClient.deletePath(res['delete']);
+      print('Successfully deleted');
+    }
   }
 }
