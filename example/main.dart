@@ -21,6 +21,8 @@ void main(List<String> arguments) async {
 
   var res = parser.parse(arguments);
 
+  //var res = parser.parse(['--show']);
+
   DatabaseClient databaseClient = DatabaseClient();
   await databaseClient.init();
 
@@ -48,13 +50,13 @@ void main(List<String> arguments) async {
             convertAnalysisDataToVirusTotalData(analysisData, el, fileflag));
       }
     }
+  }
 
-    if (res.wasParsed('show')) {
-      databaseClient.show();
-    }
-    if (res.wasParsed('delete')) {
-      databaseClient.deletePath(res['delete']);
-      print('Successfully deleted');
-    }
+  if (res.wasParsed('show')) {
+    databaseClient.show();
+  }
+  if (res.wasParsed('delete')) {
+    databaseClient.deletePath(res['delete']);
+    print('Successfully deleted');
   }
 }
