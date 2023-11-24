@@ -57,4 +57,6 @@ void main(List<String> arguments) async {
     databaseClient.deletePath(res['delete']);
     print('Successfully deleted');
   }
+
+  await databaseClient.close();
 }
