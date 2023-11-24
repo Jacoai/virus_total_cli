@@ -21,8 +21,6 @@ void main(List<String> arguments) async {
 
   var res = parser.parse(arguments);
 
-  //var res = parser.parse(['--show']);
-
   DatabaseClient databaseClient = DatabaseClient();
   await databaseClient.init();
 
