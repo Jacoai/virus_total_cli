@@ -1,16 +1,29 @@
 import 'package:dio/dio.dart';
 import 'dart:io';
 
-import 'package:virus_total_cli/src/api/models/analysis_data_model/analysis_data_model.dart';
+import 'package:virus_total_cli/src/models/analysis_data/analysis_data.dart';
 
 class VirusTotalClient {
-  VirusTotalClient({required String apikey}) : _apikey = apikey;
+  VirusTotalClient({
+    required this.apikey,
+  });
 
-  final Dio _dio = Dio(
-    BaseOptions(baseUrl: 'https://www.virustotal.com/api/v3/'),
-  );
+  late final Dio _dio;
 
-  final String _apikey;
+  final String apikey;
+
+  void init() {
+    _dio = Dio(
+      BaseOptions(baseUrl: 'https://www.virustotal.com/api/v3/'),
+    )..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            options.headers.addAll({'x-apikey': apikey});
+            return handler.next(options);
+          },
+        ),
+      );
+  }
 
   Future<AnalysisData> check(String path, bool isFile) async {
     AnalysisData analysisData;
@@ -55,18 +68,20 @@ class VirusTotalClient {
     String id;
 
     try {
-      Response response = await _dio.post(isFile ? 'files' : 'urls',
-          data: data,
-          options: Options(headers: {
-            'x-apikey': _apikey,
-            "content-type": "application/x-www-form-urlencoded"
-          }));
+      Response response = await _dio.post(
+        isFile ? 'files' : 'urls',
+        data: data,
+        options: Options(
+          headers: {"content-type": "application/x-www-form-urlencoded"},
+        ),
+      );
 
       Map<String, dynamic> json = response.data;
       id = json['data']['id'];
     } catch (e) {
       rethrow;
     }
+
     return id;
   }
 
@@ -74,11 +89,14 @@ class VirusTotalClient {
     AnalysisData result;
 
     try {
-      Response response = await _dio.get('analyses/$id',
-          options: Options(headers: {
-            'x-apikey': _apikey,
+      Response response = await _dio.get(
+        'analyses/$id',
+        options: Options(
+          headers: {
             "accept": "application/json",
-          }));
+          },
+        ),
+      );
 
       result = AnalysisData.fromJson(response.data['data']);
     } catch (e) {
