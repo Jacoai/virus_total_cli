@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:virus_total_cli/src/api/models/analysis_data_model/analysis_data_model.dart';
 import 'dart:io';
-
-import 'package:virus_total_cli/src/models/analysis_data/analysis_data.dart';
 
 class VirusTotalClient {
   VirusTotalClient({

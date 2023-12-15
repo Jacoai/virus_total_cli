@@ -2,12 +2,14 @@ import 'dart:collection';
 
 import 'package:args/args.dart';
 import 'package:virus_total_cli/src/functions/is_file.dart';
+
 import 'package:virus_total_cli/virus_total_cli.dart';
 
 void main(List<String> arguments) async {
   VirusTotalClient virusTotalClient = VirusTotalClient(
     apikey: 'b2a12410feba4baf4507b69b29bea00edc9278af5a1f5a3b6ba4be6b95e80747',
   );
+  virusTotalClient.init();
 
   var parser = ArgParser()
     ..addOption('check', help: 'links or file paths for check')
@@ -54,7 +56,7 @@ void main(List<String> arguments) async {
     databaseClient.show();
   }
   if (res.wasParsed('delete')) {
-    databaseClient.deletePath(res['delete']);
+    await databaseClient.deletePath(res['delete']);
     print('Successfully deleted');
   }
 
